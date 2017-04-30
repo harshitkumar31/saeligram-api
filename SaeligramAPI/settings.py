@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jeanwzn3=a#wco(wzjyrphaacw2%+h#6n9+&07&r@j88&o6%-p'
+SECRET_KEY = '59w^$0036@=2p&=)9x%ba_8wwqds@ty4h$tiwyk&grgj1hvuvu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+AUTH_USER_MODEL = 'authentication.User'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,8 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Saligram_API',
-    'rest_framework',
     'authentication'
 ]
 
@@ -80,16 +79,8 @@ WSGI_APPLICATION = 'SaeligramAPI.wsgi.application'
 
 DATABASES = {
     'default': {
-
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'saeligram',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
-        'OPTIONS':{
-            'autocommit' : True,
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -111,8 +102,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-AUTH_USER_MODEL = 'authentication.Account'
 
 
 # Internationalization
