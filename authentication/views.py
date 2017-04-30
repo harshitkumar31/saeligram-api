@@ -1,14 +1,15 @@
 from django.shortcuts import render
 
 # Create your views here.
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentication.models import Requirement, Bid
 from .serializers import (
-    LoginSerializer, RegistrationSerializer
-)
+    LoginSerializer, RegistrationSerializer,
+    RequirementSerializer, BidSerializer)
 from .renderers import UserJSONRenderer
 
 
@@ -47,3 +48,12 @@ class LoginAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RequirementViewSet(viewsets.ModelViewSet):
+    queryset = Requirement.objects.all()
+    serializer_class = RequirementSerializer
+
+class BidViewSet(viewsets.ModelViewSet):
+    queryset = Bid.objects.all()
+    serializer_class = BidSerializer

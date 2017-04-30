@@ -2,7 +2,7 @@ __author__ = "Harshit"
 
 from rest_framework import serializers
 
-from .models import User
+from .models import User, Requirement, Bid
 from django.contrib.auth import authenticate
 
 
@@ -92,3 +92,14 @@ class LoginSerializer(serializers.Serializer):
             'username': user.username,
             'token': user.token
         }
+
+class RequirementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requirement
+        fields = '__all__'
+
+
+class BidSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bid
+        fields = '__all__'

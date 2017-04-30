@@ -13,7 +13,12 @@ from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin
 )
 from django.db import models
+from django.core.validators import URLValidator
+from django.utils import timezone
 
+STATUSES = [('unverified','unverified'),('free','free'),('premium','premium')]
+
+USERTYPES = [('A','A'),('B','B'),('C','C')]
 
 class UserManager(BaseUserManager):
     """
@@ -57,6 +62,7 @@ class UserManager(BaseUserManager):
         return user
 
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     # Each `User` needs a human-readable unique identifier that we can use to
     # represent the `User` in the UI. We want to index this column in the
@@ -88,7 +94,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     # A timestamp reprensenting when this object was last updated.
     updated_at = models.DateTimeField(auto_now=True)
 
-    userType = models.CharField(max_length=1, default='B')
+    userType = models.CharField(max_length=1, default='B', choices=USERTYPES)
+
+    status = models.CharField(choices=STATUSES, default='unverified', max_length=100)
     # More fields required by Django when specifying a custom user model.
 
     # The `USERNAME_FIELD` property tells us which field we will use to log in.
@@ -152,7 +160,23 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         return token.decode('utf-8')
 
+
 class Requirement(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=True, default='')
-    
+    imageUrl = models.TextField(validators=[URLValidator])
+    acceptedBid = models.ForeignKey('Bid', blank=True)
+
+
+    def __str__(self):
+        return self.title
+
+
+class Bid(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    bidFor = models.ForeignKey(Requirement)
+    def __str__(self):
+        return "Bid by %s at %s" % (self.user.name, self.price)
+
