@@ -13,22 +13,26 @@ class IsClient(permissions.BasePermission):
             print 'was safe'
             return True
 
-        print 'Request', request
+        # print 'Request', request
 
         try:
             auth = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
             x = jwt.decode(auth,settings.SECRET_KEY, algorithm='HS256')
-            print x
+            # print x
             return x.get('userType') == 'B'
         except Exception as e :
-            print e
+            # print e
             return False
         return False
 
     def has_object_permission(self, request, view, obj):
-        # if request.method in permissions.SAFE_METHODS:
-        #     print 'was safe'
-        #     return True
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        auth = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        x = jwt.decode(auth, settings.SECRET_KEY, algorithm='HS256')
+        # print x
+        if x.get('userType') == 'B':
+            return obj.createdBy_id == x.get('user_id')
 
-        print 'Request', request
+        # print 'Request', request
         return False
