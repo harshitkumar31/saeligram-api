@@ -6,13 +6,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentication import permissions
 from authentication.models import Requirement, Bid
 from .serializers import (
     LoginSerializer, RegistrationSerializer,
     RequirementSerializer, BidSerializer)
 from .renderers import UserJSONRenderer
 
-
+from rest_framework import generics, permissions
+from permissions import IsClient
 
 class RegistrationAPIView(APIView):
     # Allow any user (authenticated or not) to hit this endpoint.
@@ -57,3 +59,24 @@ class RequirementViewSet(viewsets.ModelViewSet):
 class BidViewSet(viewsets.ModelViewSet):
     queryset = Bid.objects.all()
     serializer_class = BidSerializer
+
+class RequirementList(generics.ListCreateAPIView):
+    queryset = Requirement.objects.all()
+    serializer_class = RequirementSerializer
+    permission_classes = [IsClient]
+
+
+class RequirementDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Requirement.objects.all()
+    serializer_class = RequirementSerializer
+    permission_classes = [IsClient]
+
+class BidList(generics.ListCreateAPIView):
+    queryset = Bid.objects.all()
+    serializer_class = BidSerializer
+    permission_classes = [IsClient]
+
+class BidDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Bid.objects.all()
+    serializer_class = BidSerializer
+    permission_classes = [IsClient]

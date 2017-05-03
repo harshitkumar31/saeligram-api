@@ -5,6 +5,11 @@ from django.db import models
 # Create your models here.
 
 import jwt
+from rest_framework_jwt.settings import api_settings
+
+from custom_jwt import  jwt_payload_handler
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
 
 from datetime import datetime, timedelta
 
@@ -152,11 +157,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         date set to 60 days into the future.
         """
         dt = datetime.now() + timedelta(days=60)
-
-        token = jwt.encode({
-            'id': self.pk,
-            'exp': int(dt.strftime('%S'))
-        }, settings.SECRET_KEY, algorithm='HS256')
+        payload = jwt_payload_handler(self)
+        token = jwt_encode_handler(payload)
+        # token = jwt.encode({
+        #     'id': self.pk,
+        #     'exp': int(dt.strftime('%S'))
+        # }, settings.SECRET_KEY, algorithm='HS256')
 
         return token.decode('utf-8')
 
@@ -165,8 +171,8 @@ class Requirement(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=True, default='')
     imageUrl = models.TextField(validators=[URLValidator])
-    acceptedBid = models.ForeignKey('Bid', blank=True)
-
+    acceptedBid = models.ForeignKey('Bid', blank=True, null=True)
+    createdBy = models.ForeignKey(User)
 
     def __str__(self):
         return self.title

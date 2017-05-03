@@ -38,6 +38,7 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
+    userType = serializers.CharField(max_length=1, read_only=True)
 
     def validate(self, data):
         # The `validate` method is where we make sure that the current
@@ -47,6 +48,7 @@ class LoginSerializer(serializers.Serializer):
         # our database.
         email = data.get('email', None)
         password = data.get('password', None)
+
 
         # As mentioned above, an email is required. Raise an exception if an
         # email is not provided.
@@ -90,7 +92,8 @@ class LoginSerializer(serializers.Serializer):
         return {
             'email': user.email,
             'username': user.username,
-            'token': user.token
+            'token': user.token,
+            'userType': user.userType,
         }
 
 class RequirementSerializer(serializers.ModelSerializer):
