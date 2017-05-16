@@ -119,7 +119,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         This string is used when a `User` is printed in the console.
         """
-        return self.email
+        return self.username
 
     @property
     def token(self):
@@ -175,7 +175,7 @@ class Requirement(models.Model):
     createdBy = models.ForeignKey(User)
 
     def __str__(self):
-        return self.title
+        return self.title + " by " + self.createdBy
 
 
 class Bid(models.Model):

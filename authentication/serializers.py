@@ -1,9 +1,12 @@
+from rest_framework.relations import PrimaryKeyRelatedField
+
 __author__ = "Harshit"
 
 from rest_framework import serializers
 
 from .models import User, Requirement, Bid
 from django.contrib.auth import authenticate
+from django.http import JsonResponse
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -101,6 +104,18 @@ class RequirementSerializer(serializers.ModelSerializer):
         model = Requirement
         fields = '__all__'
 
+class RequirementSerializerForGet(serializers.ModelSerializer):
+    createdBy = serializers.SerializerMethodField('_user')
+
+    def _user(self,obj):
+        # user = self.context['request'].user
+        user = obj.createdBy
+        return user.__str__()
+
+
+    class Meta:
+        model = Requirement
+        fields = '__all__'
 
 class BidSerializer(serializers.ModelSerializer):
     class Meta:
